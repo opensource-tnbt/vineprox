@@ -23,16 +23,14 @@ import os
 import subprocess
 
 from conf import settings
-from core.results.results_constants import ResultsConstants
-from tools.pkt_gen import trafficgen
-from tools.pkt_gen.prox.runrapid import RapidTestManager
+from runrapid import RapidTestManager
+from tools import tasks
 
-class Prox(trafficgen.ITrafficGenerator):
+class Prox():
     """
     Prox Traffic Generator
     """
     _logger = logging.getLogger(__name__)
-    _liveresults_file = settings.getValue("TRAFFICGEN_STC_LIVERESULTS_FILE")
 
     def connect(self):
         """
@@ -88,20 +86,14 @@ class Prox(trafficgen.ITrafficGenerator):
         """
         Send traffic per RFC2544 throughput test specifications.
         """
-        # Check if it is baremetal or cloud
-        if not of settings.getValue('Openstack')
-        test_params = RapidTestManager.get_defaults()
-        # Update the testparams accordingly
-        framesize = settings.getValue("TRAFFICGEN_PROX_FRAME_SIZE")
-        if traffic and 'l2' in traffic:
-            if 'framesize' in traffic['l2']:
-                framesize = traffic['l2']['framesize']
-        settings.setValue("TRAFFICGEN_PROX_FRAME_SIZE", framesize)
-
-        
-        test_manager = RapidTestManager()
-        test_result, _ = test_manager.run_tests(self.test_params)
-        # if cloud, just call the run_rapid script, right set of parameters.
+        # First render all the configurations and place it
+        # in appropriate folder: pick /tmp or /opt or $HOME
+        cmd = ['python', '-m', 'runrapid',
+                '--env', '/tmp/prox/rapid.env',
+                '--test', '/tmp/prox/tst009.test',
+                '--map', '/tmp/prox/machine.map',
+                '--runtime', '10']
+        tasks.run_task(cmd, self._logger, 'Running RUN-RAPID command')
 
 
 
