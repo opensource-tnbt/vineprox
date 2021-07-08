@@ -1,6 +1,12 @@
 VINEPROXENV_DIR="$HOME/vineproxenv"
 VINEPROX_DIR="$HOME/anuket/vineprox"
+# This should match the  TRAFFICGEN_PROX_CONF_DIR
 PROXCONF_DIR="/tmp/prox"
+OLD_FORMAT_FILE='format.yaml'
+NEW_FORMAT_FILE=$PROXCONF_DIR'/'$OLD_FORMAT_FILE
+
+echo $NEW_FORMAT_FILE
+
 echo $VINEPROXENV_DIR
 
 if [ -d "$VINEPROXENV_DIR" ] ; then
@@ -14,7 +20,7 @@ pip install -U pip
 pip install -r requirements.txt
 git clone https://gerrit.opnfv.org/gerrit/samplevnf /tmp/samplevnf
 cd /tmp/samplevnf/VNFs/DPPD-PROX/helper-scripts/rapid
-sed -i 's/format.yaml/\/opt\/prox\/format.yaml/g' rapid_test.py
+sed -i "s|$OLD_FORMAT_FILE|$NEW_FORMAT_FILE|g" rapid_test.py
 cp helper.lua $VINEPROX_DIR
 mkdir $PROXCONF_DIR
 cp format.yaml $PROXCONF_DIR

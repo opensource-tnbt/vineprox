@@ -25,6 +25,7 @@ import subprocess
 from conf import settings
 from runrapid import RapidTestManager
 from tools import tasks
+from tools.pkt_gen.prox import render
 
 class Prox():
     """
@@ -87,12 +88,24 @@ class Prox():
         Send traffic per RFC2544 throughput test specifications.
         """
         # First render all the configurations and place it
+        filesdir = settings.getValue('TRAFFICGEN_PROX_FILES_DIR')
+        confdir = settings.getValue('TRAFFICGEN_PROX_CONF_DIR')
+        render.render_content_jinja()
+        # copy some static files to config folder.
+        for stfile in settings.getValue('TRAFFICGEN_PROX_STATIC_CONF_FILES'):
+            srcfile = os.path.join(filesdir, stfile)
+            if os.path.exists(srcfile):
+                cmd = ['cp', srcfile, confdir ]
+                tasks.run_task(cmd, self._logger, 'Copying Static Conf. Files')
         # in appropriate folder: pick /tmp or /opt or $HOME
+        envfile = os.path.join(confdir, settings.getValue('TRAFFICGEN_PROX_ENV_FILE'))
+        tstfile = os.path.join(confdir, settings.getValue('TRAFFICGEN_PROX_TEST_FILE'))
+        mmapfile = os.path.join(confdir, 'machine.map')
         cmd = ['python', '-m', 'runrapid',
-                '--env', '/tmp/prox/rapid.env',
-                '--test', '/tmp/prox/tst009.test',
-                '--map', '/tmp/prox/machine.map',
-                '--runtime', '10']
+                '--env', envfile,
+                '--test', tstfile,
+                '--map', mmapfile,
+                '--runtime', settings.getValue('TRAFFICGEN_PROX_RUNTIME')]
         tasks.run_task(cmd, self._logger, 'Running RUN-RAPID command')
 
 
