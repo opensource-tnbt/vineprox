@@ -7,11 +7,11 @@ lat_percentile = 99
 [TestM1]
 name = Generator
 prox_launch_exit = false
-config_file = {{data.config_file}}
+config_file = ./vineperf-baremetal.cfg
 dest_vm = 2
-mcore = [{{data.mcore}}]
-gencores = [{{data.gencores}}]
-latcores = [{{data.latcores}}]
+mcore = [10]
+gencores = [11,12,13]
+latcores = [14]
 
 [TestM2]
 name = Dummy
@@ -25,7 +25,7 @@ warmupimix=[64]
 warmupspeed=1
 warmuptime=2
 #imixs=[[64],[128],[256],[512],[1024],[1280],[1512]]
-imixs=[{{data.pktsizes}}]
+imixs=[[64]]
 flows=[1]
 drop_rate_threshold = 0
 MAXr = 3

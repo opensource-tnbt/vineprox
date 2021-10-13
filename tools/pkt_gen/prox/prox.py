@@ -87,10 +87,18 @@ class Prox():
         """
         Send traffic per RFC2544 throughput test specifications.
         """
+        pkt_size = None
+        traffic = settings.getValue('TRAFFIC')
+        if traffic and 'l2' in traffic:
+            print('TRAFFIC FOUND')
+            if 'framesize' in traffic['l2']:
+                framesize = traffic['l2']['framesize']
+                pkt_size = '[' + str(framesize) + ']'
         # First render all the configurations and place it
         filesdir = settings.getValue('TRAFFICGEN_PROX_FILES_DIR')
         confdir = settings.getValue('TRAFFICGEN_PROX_CONF_DIR')
-        render.render_content_jinja()
+        render.render_content_jinja(pkt_size)
+        return
         # copy some static files to config folder.
         for stfile in settings.getValue('TRAFFICGEN_PROX_STATIC_CONF_FILES'):
             srcfile = os.path.join(filesdir, stfile)

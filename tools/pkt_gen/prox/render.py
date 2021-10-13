@@ -9,7 +9,7 @@ def listdir_nohidden(path):
         if not f.startswith('.'):
             yield f
 
-def render_content_jinja():
+def render_content_jinja(pkt_size):
     templates_dir_path = settings.getValue('TRAFFICGEN_PROX_TEMPLATES_DIR')
     values_from_vineperf = {
         'm1_admin_ip' : settings.getValue('TRAFFICGEN_PROX_EAST_MGMT_IP'),
@@ -34,6 +34,10 @@ def render_content_jinja():
             settings.getValue('TRAFFICGEN_PROX_GENERATOR_KEYFILE')),
         'latency_buckets': settings.getValue('TRAFFICGEN_PROX_LATENCY_BUCKETS'),
     }
+    if pkt_size:
+        values_from_vineperf['pktsizes'] = pkt_size
+    else:
+        values_from_vineperf['pktsizes'] = settings.getValue('TRAFFICGEN_PROX_PKTSIZES'),
 
     file_loader = FileSystemLoader(templates_dir_path)
     env = Environment(loader = file_loader)
